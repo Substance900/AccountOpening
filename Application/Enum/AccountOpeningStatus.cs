@@ -8,8 +8,16 @@ namespace Application.Enum
 {
     public enum AccountOpeningStatus
     {
-        Initiated = 1,
-        Progress,
+        BvnVerification = 1,
+        AccountReason,
+        AccountOwner,
+        FATCA,
+        AddressOwnerAddress,
+        Employment,
+        NextOfKin,
+        DocumentUpload,
+        DocumentUploadCompulsory,
+        Summary,
         Completed
     }
 }

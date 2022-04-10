@@ -2,6 +2,7 @@
 using Application.Contracts.Infrastructure;
 using Application.Models;
 using Application.Response;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -50,7 +51,7 @@ namespace Infrastructure.Services
                 var rId = JsonSerializer.Deserialize<EmailResponse>(stringResponse);
 
                 result.IsSuccessful = true;
-                result.Status = 1;
+                result.Status = StatusCodes.Status200OK;
                 result.Message = "Mail sent";
                 return result;
 
@@ -61,7 +62,7 @@ namespace Infrastructure.Services
                 _logger.LogInformation($"Failed Email Response: {stringResponse}{Environment.NewLine}");
                 var rId = JsonSerializer.Deserialize<EmailResponse>(stringResponse);
                 result.IsSuccessful = false;
-                result.Status = 0;
+                result.Status = StatusCodes.Status400BadRequest;
                 result.Message = "Mail not sent";
                // result.Error = new ErrorResponse { Description = rId.Message };
                 return result;

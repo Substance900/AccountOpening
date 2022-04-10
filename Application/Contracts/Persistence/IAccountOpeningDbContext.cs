@@ -23,6 +23,9 @@ namespace Application.Contracts.Persistence
 
         public DbSet<NextOfKin> NextOfKins { get; set; }
         public DbSet<OtpInfo> OtpInfos { get; set; }
+        public DbSet<AccountOpeningStage> AccountOpeningStages { get; set; }
+
+        public DbSet<ChoiceOfAccount> ChoiceOfAccounts { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

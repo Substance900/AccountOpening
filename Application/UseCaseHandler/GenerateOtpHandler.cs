@@ -7,6 +7,7 @@ using Application.Response;
 using Application.Utility;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace Application.UseCaseHandler
             {
                 var generateOTP = await _applicationUtility.GenerateOtp();
 
-                var obj = new OtpInfo { ExpiryDate = DateTime.Now.AddMinutes(15), OtpCode = generateOTP, OptStatus = (int)OtpStatus.Initiated, CustomerId = request.CustomerEmail };
+                var obj = new OtpInfo { ExpiryDate = DateTime.Now.AddMinutes(5), OtpCode = generateOTP, OptStatus = (int)OtpStatus.Initiated, CustomerId = request.CustomerEmail };
 
                 var msg = $"Dear Customer, your otp for validation is {generateOTP}";
                 var email = new Email { Message = msg, Recipient = request.CustomerEmail, Subject = "OTP Request" };
@@ -54,7 +55,7 @@ namespace Application.UseCaseHandler
                     _logger.LogError($"Could not generate otp at this time" +
                             $"{Environment.NewLine}===========================Error Details===================================" +
                             $"{Environment.NewLine}{ex.Message}", ex);
-                    return new BaseResponse { IsSuccessful = false, Error=new ErrorResponse { Description=ex.Message} };
+                    return new BaseResponse { Status= StatusCodes.Status400BadRequest, IsSuccessful = false, Error=new ErrorResponse { Description=ex.Message} };
 
                 }
 

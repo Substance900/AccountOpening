@@ -4,7 +4,9 @@ using Application.Enum;
 using Application.Request;
 using Application.Response;
 using Application.Utility;
+using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -44,16 +46,26 @@ namespace Application.UseCaseHandler
                         msg = "valid otp";
                         var bvnDetails = new BvnDetailRequest { CustomerEmail=request.CustomerEmail};
                         var response = await _bvnService.GetBvnByEmail(bvnDetails);
+                        otp.LastModifiedDate = DateTime.Now;
+                        // to keep track of the Stage
+                        var presentStage = new AccountOpeningStage { Bvn = response.Data.Bvn, Stage = (int)AccountOpeningStatus.BvnVerification };
+
+                        await _accountOpeningDbContext.AccountOpeningStages.AddAsync(presentStage);
+                        await _accountOpeningDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                         response.Message = msg;
                         response.IsSuccessful = valid;
+                        response.Status = StatusCodes.Status200OK;
                         return  response;
+                        
+                        
+
                     }
                     else
                     {
                         msg = "Otp has expired";
                         otp.OptStatus = (int)OtpStatus.Expired;
                     }
-                    otp.LastModifiedDate = DateTime.Now;
+                   
                     
                     await _accountOpeningDbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
                 }
